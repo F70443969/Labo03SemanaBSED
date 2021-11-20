@@ -1,25 +1,51 @@
 import logo from './logo.svg';
 import './App.css';
+import React from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import {Table, Button, Container, Modal, ModalBody, ModalHeader, FormGroup, ModalFooter} from 'reactstrap';
+ 
+const data = [
+  { id: 1, character: "Ironman", category: "Avenger" },
+  { id: 2, character: "Wolverine", category: "Dragon Ball" },
+  { id: 3, character: "MsMarvel", category: "Rurouni Kenshin" },
+  { id: 4, character: "Monkey D. Luffy", category: "One Piece" },
+  { id: 5, character: "Edward Elric", category: "Fullmetal Alchemist: Brotherhood"},
+  { id: 6, character: "Seto Kaiba", category: "Yu-Gi-Oh!" },
+];
 
-function App() {
+class App extends React.Component {
+state={
+  data: data
+}
+ render(){ 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+   <>
+   <Container>
+     <br/>
+   <Button color="primary">Insert a Marvel character </Button>
+   <br/><br/>
+
+   <Table>
+            <thead><tr><th>ID</th>
+                <th>Character</th>
+                <th>Category</th>
+                <th>Action</th></tr> </thead>
+                <tbody>
+                  {this.state.data.map((elemento)=>(
+                    <tr> 
+                      <td>{elemento.id}</td>
+                      <td>{elemento.character}</td>
+                      <td>{elemento.category}</td>
+                      <td><Button color="primary">Edit</Button>
+                      <Button color="danger">Delete</Button></td>
+                    </tr>
+                  ))}
+                </tbody>
+
+  </Table>
+   </Container>
+   </>)
+ }
 }
 
 export default App;
