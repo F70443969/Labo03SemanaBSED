@@ -1,92 +1,163 @@
-import logo from './logo.svg';
-import './App.css';
-import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import {Table, Button, Container, Modal, ModalBody, ModalHeader, FormGroup, ModalFooter} from 'reactstrap';
- 
+import React from "react";
+import logo from "./logo.svg";
+import "./App.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import {Table,Button,
+  Container, Modal,ModalHeader,ModalBody,FormGroup, ModalFooter,
+} from "reactstrap";
+
+// -----------datos quemados----------
 const data = [
   { id: 1, character: "Ironman", category: "Avenger" },
   { id: 2, character: "Wolverine", category: "x Men" },
   { id: 3, character: "MsMarvel", category: "Inhuman" },
-  { id: 4, character: "Hulk", category: "One Piece" },
-  { id: 5, character: "Black WIdow", category: "Avenger"},
-  { id: 6, character: "Spider Man", category: "Avenger" },
+ 
 ];
 
 class App extends React.Component {
-state= {
-  data: data,
-  form:{
-    id:'' ,
-    character:'' ,
-    category:''
-  },
-  insertModal: false,
-};
+  state = {
+    data: data,
+    updateModal: false,
+    insertModal: false,
+    form: {
+      id: "",
+      character: "",
+      category: "",
+    },
+  };
 
-handleChange=e=>{
-this.setState({
-  form:{
-    ...this.state.form,
-    [e.target.name]: e.target.value,
+  handleChange = (e) => {
+    this.setState({
+      form: {
+        ...this.state.form,
+        [e.target.name]: e.target.value,
+      },
+    });
+  };
+
+   // -----------Modal para insertar----------
+
+   showInsertModal = () => {
+    this.setState({
+      insertModal: true,
+    });
+  };
+
+  hideInsertModal = () => {
+    this.setState({ insertModal: false });
+  };
+
+  insert= ()=>{
+    var valorNuevo= {...this.state.form};
+    valorNuevo.id=this.state.data.length+1;
+    var lista= this.state.data;
+    lista.push(valorNuevo);
+    this.setState({ insertModal: false, data: lista });
   }
-});
-}
 
- ShowInsertModal=() => {
-   this.setState({insertModal: true});
- }
+  // -----------Modal para Actualizar ----------
 
- hideInsertModal=() => {
-  this.setState({insertModal: false});
-}
+  showUpdateModal = (data) => {
+    this.setState({
+      form: data,
+      updateModal: true,
+    });
+  };
 
-insert= ()=>{
-  var valorNuevo= {...this.state.form};
-  valorNuevo.id=this.state.data.length+1;
-  var lista= this.state.data;
-  lista.push(valorNuevo);
-  this.setState({ insertModal: false, });
-}
+  hideUpdateModal = () => {
+    this.setState({ updateModal: false });
+  };
 
- render(){ 
-  return (
-   <>
-   <Container>
-     <br/>
-   <Button color="success" onClick={()=>this.ShowInsertModal()}>Insert a Marvel character </Button>
-   <br/>
-   <br/>
+  update = (data) => {
+    var counter = 0;
+    var array = this.state.data;
+    array.map((record) => {
+      if (data.id == record.id) {
+        array[counter].character = data.character;
+        array[counter].category = data.category;
+      }
+      counter++;
+    });
+    this.setState({ data: array, updateModal: false });
+  };
 
-   <Table>
-            <thead><tr><th>ID</th>
+    // ----------- Eliminar  ----------
+  
+  delete = (data) => {
+    var option = window.confirm("Are you sure you want to delete the character? "+data.id);
+    if (option == true) {
+      var counter = 0;
+      var array = this.state.data;
+      array.map((record) => {
+        if (data.id == record.id) {
+          array.splice(counter, 1);
+        }
+        counter++;
+      });
+      this.setState({ data: array, updateModal: false });
+    }
+  };
+
+  
+
+  render() {
+    
+    return (
+      <>
+        <Container >
+          <div class="col text-center">
+          <h1>MARVEL FAN CRUD</h1>
+          </div>
+        
+          <Table>
+            <thead>
+              <tr>
+                <th>No</th>
                 <th>Character</th>
                 <th>Category</th>
-                <th>Action</th></tr> </thead>
-                <tbody>
-                  {this.state.data.map((elemento)=>(
-                    <tr> 
-                      <td>{elemento.id}</td>
-                      <td>{elemento.character}</td>
-                      <td>{elemento.category}</td>
-                      <td><Button color="primary">Update</Button>{"  "}
-                      <Button color="danger">Delete</Button></td>
-                    </tr>
-                  ))}
-                </tbody>
+                <th>Tools</th>
+              </tr>
+            </thead>
 
-  </Table>
-  </Container>
+            <tbody>
+              {this.state.data.map((data) => (
+                <tr key={data.id}>
+                  <td>{data.id}</td>
+                  <td>{data.character}</td>
+                  <td>{data.category}</td>
+                  <td>
+                    <Button
+                      color="info"
+                      onClick={() => this.showUpdateModal(data)}
+                    >
+                      update
+                    </Button>{" "}
+                    <Button color="secondary" onClick={()=> this.delete(data)}>delete</Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+          <br />
+          <br />
+          <br />
+          <div class="col text-center">
+          <Button  color="primary" onClick={()=>this.showInsertModal()}>Insert New MARVEL fav character</Button>
+          </div>
+        
+        </Container>
 
-  <Modal isOpen={this.state.insertModal}>
+    
+
+        <Modal isOpen={this.state.insertModal}>
           <ModalHeader>
-           <div><h3>Insert MARVEL Character</h3></div>
+           <div><h3>Insert character</h3></div>
           </ModalHeader>
 
           <ModalBody>
             <FormGroup>
               <label>
-                Id: 
+                No: 
               </label>
               
               <input
@@ -99,7 +170,7 @@ insert= ()=>{
             
             <FormGroup>
               <label>
-                Character: 
+                character: 
               </label>
               <input
                 className="form-control"
@@ -111,7 +182,7 @@ insert= ()=>{
             
             <FormGroup>
               <label>
-                Category: 
+                category: 
               </label>
               <input
                 className="form-control"
@@ -124,22 +195,88 @@ insert= ()=>{
 
           <ModalFooter>
             <Button
-              color="primary" onClick={()=>this.insert()}
-             
+              color="info"
+              onClick={() => this.insert()}
             >
-              Insert
+              insert
             </Button>
             <Button
-             color="danger" onClick={()=>this.hideInsertModal()}
+              className="btn btn-secondary"
+              onClick={() => this.hideInsertModal()}
             >
-              Cancel
+              exit
             </Button>
           </ModalFooter>
         </Modal>
-  
-   </>
-   );
- }
-}
 
+
+
+
+
+
+        <Modal isOpen={this.state.updateModal}>
+          <ModalHeader>
+           <div><h3>Update the MARVEL character</h3></div>
+          </ModalHeader>
+
+          <ModalBody>
+            <FormGroup>
+              <label>
+               No:
+              </label>
+            
+              <input
+                className="form-control"
+                readOnly
+                type="text"
+                value={this.state.form.id}
+              />
+            </FormGroup>
+            
+            <FormGroup>
+              <label>
+                character: 
+              </label>
+              <input
+                className="form-control"
+                name="character"
+                type="text"
+                onChange={this.handleChange}
+                value={this.state.form.character}
+              />
+            </FormGroup>
+            
+            <FormGroup>
+              <label>
+                category: 
+              </label>
+              <input
+                className="form-control"
+                name="category"
+                type="text"
+                onChange={this.handleChange}
+                value={this.state.form.category}
+              />
+            </FormGroup>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button
+              color="info"
+              onClick={() => this.update(this.state.form)}
+            >
+              update
+            </Button>
+            <Button
+              color="secondary"
+              onClick={() => this.hideUpdateModal()}
+            >
+              exit
+            </Button>
+          </ModalFooter>
+        </Modal>
+      </>
+    );
+  }
+}
 export default App;
