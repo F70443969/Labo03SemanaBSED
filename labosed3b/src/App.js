@@ -41,6 +41,14 @@ this.setState({
   this.setState({insertModal: false});
 }
 
+insert= ()=>{
+  var valorNuevo= {...this.state.form};
+  valorNuevo.id=this.state.data.length+1;
+  var lista= this.state.data;
+  lista.push(valorNuevo);
+  this.setState({ insertModal: false, });
+}
+
  render(){ 
   return (
    <>
@@ -61,7 +69,7 @@ this.setState({
                       <td>{elemento.id}</td>
                       <td>{elemento.character}</td>
                       <td>{elemento.category}</td>
-                      <td><Button color="primary">Edit</Button>{"  "}
+                      <td><Button color="primary">Update</Button>{"  "}
                       <Button color="danger">Delete</Button></td>
                     </tr>
                   ))}
@@ -116,7 +124,7 @@ this.setState({
 
           <ModalFooter>
             <Button
-              color="primary"
+              color="primary" onClick={()=>this.insert()}
              
             >
               Insert
