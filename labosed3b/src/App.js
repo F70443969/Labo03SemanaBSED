@@ -6,24 +6,49 @@ import {Table, Button, Container, Modal, ModalBody, ModalHeader, FormGroup, Moda
  
 const data = [
   { id: 1, character: "Ironman", category: "Avenger" },
-  { id: 2, character: "Wolverine", category: "Dragon Ball" },
-  { id: 3, character: "MsMarvel", category: "Rurouni Kenshin" },
-  { id: 4, character: "Monkey D. Luffy", category: "One Piece" },
-  { id: 5, character: "Edward Elric", category: "Fullmetal Alchemist: Brotherhood"},
-  { id: 6, character: "Seto Kaiba", category: "Yu-Gi-Oh!" },
+  { id: 2, character: "Wolverine", category: "x Men" },
+  { id: 3, character: "MsMarvel", category: "Inhuman" },
+  { id: 4, character: "Hulk", category: "One Piece" },
+  { id: 5, character: "Black WIdow", category: "Avenger"},
+  { id: 6, character: "Spider Man", category: "Avenger" },
 ];
 
 class App extends React.Component {
-state={
-  data: data
+state= {
+  data: data,
+  form:{
+    id:'' ,
+    character:'' ,
+    category:''
+  },
+  insertModal: false,
+};
+
+handleChange=e=>{
+this.setState({
+  form:{
+    ...this.state.form,
+    [e.target.name]: e.target.value,
+  }
+});
 }
+
+ ShowInsertModal=() => {
+   this.setState({insertModal: true});
+ }
+
+ hideInsertModal=() => {
+  this.setState({insertModal: false});
+}
+
  render(){ 
   return (
    <>
    <Container>
      <br/>
-   <Button color="primary">Insert a Marvel character </Button>
-   <br/><br/>
+   <Button color="success" onClick={()=>this.ShowInsertModal()}>Insert a Marvel character </Button>
+   <br/>
+   <br/>
 
    <Table>
             <thead><tr><th>ID</th>
@@ -36,15 +61,76 @@ state={
                       <td>{elemento.id}</td>
                       <td>{elemento.character}</td>
                       <td>{elemento.category}</td>
-                      <td><Button color="primary">Edit</Button>
+                      <td><Button color="primary">Edit</Button>{"  "}
                       <Button color="danger">Delete</Button></td>
                     </tr>
                   ))}
                 </tbody>
 
   </Table>
-   </Container>
-   </>)
+  </Container>
+
+  <Modal isOpen={this.state.insertModal}>
+          <ModalHeader>
+           <div><h3>Insert MARVEL Character</h3></div>
+          </ModalHeader>
+
+          <ModalBody>
+            <FormGroup>
+              <label>
+                Id: 
+              </label>
+              
+              <input
+                className="form-control"
+                readOnly
+                type="text"
+                value={this.state.data.length+1}
+              />
+            </FormGroup>
+            
+            <FormGroup>
+              <label>
+                Character: 
+              </label>
+              <input
+                className="form-control"
+                name="character"
+                type="text"
+                onChange={this.handleChange}
+              />
+            </FormGroup>
+            
+            <FormGroup>
+              <label>
+                Category: 
+              </label>
+              <input
+                className="form-control"
+                name="category"
+                type="text"
+                onChange={this.handleChange}
+              />
+            </FormGroup>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button
+              color="primary"
+             
+            >
+              Insert
+            </Button>
+            <Button
+             color="danger" onClick={()=>this.hideInsertModal()}
+            >
+              Cancel
+            </Button>
+          </ModalFooter>
+        </Modal>
+  
+   </>
+   );
  }
 }
 
